@@ -6,7 +6,7 @@
 
 int main(void) {
 
-  char* filename = "input.txt";
+  char* filename = "input2.txt";
 
   // read the file line by line
   FILE* fp = fopen(filename, "r");
@@ -24,25 +24,44 @@ int main(void) {
     // printf("rotation = %c and dist = %d\n", rotation, dist);
 
     if (rotation == 'L') {
-      dial = floor_mod((dial - dist), MAX);
+      dial_zero += dec(&dial, dist);
     } else {
-      dial = floor_mod((dial + dist), MAX);
-    }
-
-    if (dial == 0) {
-      dial_zero++;
+      dial_zero += inc(&dial, dist);
     }
 
   }
 
   printf("%d\n", dial_zero);
-
   
   fclose(fp);
 
   return 0;
 }
 
-// floor mod function doesn't allow the input to go beyond b (100 in this case)
-// or below 0. giving us the circular functionality we want
-int floor_mod(int a, int b) { return ((a % b) + b) % b; }
+int inc(int* dial, int dist) {
+  int zero_times = 0;
+  for (int i = 0; i < dist; i++) {
+    if ((*dial) == 0) {
+      zero_times++;
+    }
+    *dial = *dial + 1;
+    // floor mod
+    *dial = ((*dial % MAX) + MAX) % MAX;
+  }
+
+  return zero_times;
+}
+
+int dec(int* dial, int dist) {
+  int zero_times = 0;
+  for (int i = 0; i < dist; i++) {
+    if ((*dial) == 0) {
+      zero_times++;
+    }
+    *dial = *dial - 1;
+    // floor mod
+    *dial = ((*dial % MAX) + MAX) % MAX;
+  }
+
+  return zero_times;
+}

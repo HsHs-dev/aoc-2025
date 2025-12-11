@@ -43,6 +43,6 @@ int main(void) {
   return 0;
 }
 
-// floor mod function doesn't allow the input to go beyond b (100 in this case)
+// floor mod function doesn't allow the input to go beyond b (99 in this case)
 // or below 0. giving us the circular functionality we want
 int floor_mod(int a, int b) { return ((a % b) + b) % b; }
