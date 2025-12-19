@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,14 +6,14 @@
 
 int main(void) {
 
-  FILE* fp = fopen("input1.txt", "r");
+  FILE* fp = fopen("input.txt", "r");
 
   if (fp == NULL) {
     printf("Failed to open the file");
     exit(EXIT_FAILURE);
   }
 
-  int sum = 0;
+  uint64_t sum = 0;
 
   char* line = NULL;
   size_t len = 0;
@@ -56,8 +57,8 @@ int find_two_largest(char* line) {
 
 
 // code from https://stackoverflow.com/questions/12700497/how-to-concatenate-two-integers-in-c
-unsigned concatenate(unsigned x, unsigned y) {
-  unsigned pow = 10;
+uint64_t concatenate(uint64_t x, uint64_t y) {
+  uint64_t pow = 10;
   while (y >= pow)
     pow *= 10;
   return x * pow + y;
