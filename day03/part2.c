@@ -35,58 +35,42 @@ int main(void) {
 
 uint64_t find_largest(char* line) {
 
-  printf("line is %s", line);
-
   int len = strlen(line);
-  // remove new-line char if present
   if (len > 0 && line[len - 1] == '\n') {
     len--;
   }
 
-  // number of substitutes left before we run out of digits
   int substitutes = len - BANK_BATTERIES;
 
-  int max = 0, batteries = BANK_BATTERIES;
-  bool subDown = false;
   uint64_t best = 0;
+  int best_digits = 0;
+  int max = -1;
+
   for (int i = 0; i < len; i++) {
 
-    int left = len - i;
-
     int current = line[i] - '0';
+    int left = len - i - 1;
 
+    while (best_digits > 0 && substitutes > 0 && current > (best % 10) && best_digits + left >= BANK_BATTERIES) {
 
-    if (current > (best % 10) && substitutes > 0 && best > 0 && batteries != 1) {
       best /= 10;
-      best = concatenate(best, current);
+      best_digits--;
       substitutes--;
-      subDown = true;
-    } else {
-      if (batteries == 1 && i != len - 1) continue;
-      best = concatenate(best, current);
-      batteries--;
     }
-    
-    if (current > max && substitutes > 0 && max > 0 && left >= BANK_BATTERIES) {
-      best = current;
-      max = current;
-      if (subDown) {
-        subDown = false;
-      } else {
-        substitutes--;
-      }
+
+    if (best_digits < BANK_BATTERIES) {
+      best = concatenate(best, current);
+      best_digits++;
+    } else {
+      substitutes--;
     }
 
     if (current > max) {
       max = current;
     }
-
   }
 
-  printf("best is %" PRIu64 "\n\n", best);
-
   return best;
-
 }
 
 // code from https://stackoverflow.com/questions/12700497/how-to-concatenate-two-integers-in-c
