@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdbool.h>
 #include "main.h"
 
 #define BANK_BATTERIES 12
@@ -45,7 +46,8 @@ uint64_t find_largest(char* line) {
   // number of substitutes left before we run out of digits
   int substitutes = len - BANK_BATTERIES;
 
-  int max = 0, batteries = 12;
+  int max = 0, batteries = BANK_BATTERIES;
+  bool subDown = false;
   uint64_t best = 0;
   for (int i = 0; i < len; i++) {
 
@@ -53,12 +55,14 @@ uint64_t find_largest(char* line) {
 
     int current = line[i] - '0';
 
-    if (current > (best % 10) && substitutes > 0 && best > 0) {
+
+    if (current > (best % 10) && substitutes > 0 && best > 0 && batteries != 1) {
       best /= 10;
       best = concatenate(best, current);
       substitutes--;
+      subDown = true;
     } else {
-      if (batteries == 0 && i != len - 1) continue;
+      if (batteries == 1 && i != len - 1) continue;
       best = concatenate(best, current);
       batteries--;
     }
@@ -66,8 +70,11 @@ uint64_t find_largest(char* line) {
     if (current > max && substitutes > 0 && max > 0 && left >= BANK_BATTERIES) {
       best = current;
       max = current;
-      substitutes--;
-      batteries += i;
+      if (subDown) {
+        subDown = false;
+      } else {
+        substitutes--;
+      }
     }
 
     if (current > max) {
